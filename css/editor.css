@@ -1,0 +1,60 @@
+
+.wysiwyg_panel {
+    background: url('../img/bg.png');
+    border: 1px solid #ccc;
+    height: 24px;
+    position: absolute;
+    border-radius: 2px;
+    display: none;
+}
+.wysiwyg_panel select {
+    height: 18px;
+    line-height: 18px;
+    width: 50px;
+    padding: 0;
+    margin: 0;
+}
+.wysiwyg_panel option{
+    font-size: 12px;
+    width: 50px;
+    padding: 0;
+    margin: 0;
+}
+
+.wysiwyg_btn {
+    display: block;
+    float:left;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: 4px 4px;
+}
+.wysiwyg_btn:hover {
+    background-color: #c6edf9;
+}
+.wysiwyg_btn_bold {
+    background-image: url('../img/oxygen/bold.png');
+}
+.wysiwyg_btn_italic {
+    background-image: url('../img/oxygen/italic.png');
+}
+.wysiwyg_btn_bg_color {
+    background-image: url('../img/oxygen/bg_color.png');
+}
+.wysiwyg_btn_font_color {
+    background-image: url('../img/oxygen/font_color.png');
+}
+.wysiwyg_btn_close {
+    background-image: url('../img/oxygen/close.png');
+}
+.wysiwyg_btn_font_size {
+    background-image: url('../img/oxygen/font_size.png');
+}
+.wysiwyg_btn_strike {
+    background-image: url('../img/oxygen/strike.png');
+}
+.wysiwyg_btn_underline {
+    background-image: url('../img/oxygen/underline.png');
+}
