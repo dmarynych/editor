@@ -10,7 +10,9 @@ var editor = {
     add: function(block) {
         block = $(block);
 
-        var buttons = ['bold', 'italic', 'underline', 'strike'];
+        var buttons = [
+            'bold', 'italic', 'underline', 'strike',
+            'align_left', 'align_center', 'align_right'];
         var wysiwyg = $('<div class="wysiwyg_panel"></div>');
 
         var i = 0;
@@ -67,6 +69,15 @@ var editor = {
         }
         else if(cmd === 'strike') {
             document.execCommand('strikeThrough');
+        }
+        else if(cmd === 'align_left') {
+            document.execCommand('justifyLeft');
+        }
+        else if(cmd === 'align_center') {
+            document.execCommand('justifyCenter');
+        }
+        else if(cmd === 'align_right') {
+            document.execCommand('justifyRight');
         }
 
         else if(cmd === 'font_color') {

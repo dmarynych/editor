@@ -58,3 +58,6 @@
 .wysiwyg_btn_underline {
     background-image: url('../img/oxygen/underline.png');
 }
+.wysiwyg_btn_align_left { background-image: url('../img/oxygen/text_left.png');}
+.wysiwyg_btn_align_center { background-image: url('../img/oxygen/text_center.png');}
+.wysiwyg_btn_align_right { background-image: url('../img/oxygen/text_right.png');}
