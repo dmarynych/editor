@@ -8,13 +8,17 @@ var editor = {
    
     },
     add: function(block) {
-        $(block).bind('keypress.fix_enter',function(e){
-            if(e.keyCode == 13) {
-                document.execCommand('insertHTML', false, '<br>');
-                return false;
-            }
-        });        
-        block = $(block);
+        // block.bind('keypress.fix_enter',function(e){
+        //     if(e.keyCode == 13) {
+        //         document.execCommand('insertHTML', false, '<br>');
+        //         $('br').each(function(index) {
+        //             $(this).removeAttr('contenteditable');
+        //         });
+
+        //         return false;
+        //     }
+        // });        
+        //block = block;
 
         var buttons = [
             'bold', 'italic', 'underline', 'strike',
@@ -33,8 +37,8 @@ var editor = {
 
         wysiwyg.width(i*24);
 
-        block.attr('contenteditable', true);
-
+        block.contentEditable = true;
+        block = $(block);
 
         block.click(function() {
             $('.wysiwyg_panel').hide();
@@ -57,7 +61,7 @@ var editor = {
             //block.attr('contenteditable', false);
         });
 
-        wysiwyg.attr('contenteditable', false);
+        wysiwyg.contentEditable = false;
         block.prepend(wysiwyg);
         //disableSelection(wysiwyg);
     },

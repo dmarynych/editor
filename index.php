@@ -20,7 +20,7 @@
     <script type="text/javascript">
         $(function() {
             $.each($('p'), function(k, v) {
-                editor.add($(v));
+                editor.add(v);
             });
 
         });
