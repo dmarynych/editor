@@ -8,21 +8,10 @@ var editor = {
    
     },
     add: function(block) {
-        // block.bind('keypress.fix_enter',function(e){
-        //     if(e.keyCode == 13) {
-        //         document.execCommand('insertHTML', false, '<br>');
-        //         $('br').each(function(index) {
-        //             $(this).removeAttr('contenteditable');
-        //         });
-
-        //         return false;
-        //     }
-        // });        
-        //block = block;
 
         var buttons = [
             'bold', 'italic', 'underline', 'strike',
-            'align_left', 'align_center', 'align_right'];
+            'align_left', 'align_center', 'align_right', 'save'];
         var wysiwyg = $('<div class="wysiwyg_panel"></div>');
 
         var i = 0;
@@ -122,11 +111,26 @@ var editor = {
                     block.find('.edit_text').css({'font-size': size, 'line-height': size});
                     block.css({'height': size});
                     var w = cs.checkWidth(block.find('.edit_text').clone());
-
                     block.css({'width': w});
                 }
             })
         }
+        else if(cmd === 'save') {
+            datavalue = block.clone();
+            datavalue.find('.wysiwyg_panel').remove();
+            var formData = {
+                "id":block.attr('data_id')
+                , "value":datavalue.html()
+            };            
+            $.ajax({
+                url:'example.php'
+                , type:'POST'
+                , data:'jsonData=' + $.toJSON(formData)
+                , success: function(res) {
+                    alert('Data updated');
+                }
+            });           
+        }        
 
         //
 
