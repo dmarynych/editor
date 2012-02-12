@@ -27,10 +27,12 @@ var editor = {
 
         wysiwyg.width(i*24);
 
+        block.attr('contenteditable', true);
 
 
-        block.mouseover(function() {
-            document.designMode = "on";
+        block.click(function() {
+            $('.wysiwyg_panel').hide();
+            //document.designMode = "on";
 
             var pos = block.position();
             var editor = $(this).find('.wysiwyg_panel');
@@ -38,13 +40,13 @@ var editor = {
             var top = parseInt(pos.top) - parseInt(editor.height()) + parseInt(block.css('margin-top')) + parseInt(block.css('padding-top'));
             editor.css({left: pos.left,  top: top})
                 .show();
-            block.attr('contenteditable', true);
+            
         })
         .mouseout(function() {
-            document.designMode = "off";
+            //document.designMode = "off";
 
-            $(this).find('.wysiwyg_panel').hide();
-            block.attr('contenteditable', false);
+            //$(this).find('.wysiwyg_panel').hide();
+            //block.attr('contenteditable', false);
         });
 
         wysiwyg.attr('contenteditable', false);
@@ -59,25 +61,25 @@ var editor = {
         var y = e.clientY;
 
         if(cmd === 'bold') {
-            document.execCommand('bold');
+            document.execCommand('bold', false, '');
         }
         else if(cmd === 'italic') {
-            document.execCommand('italic');
+            document.execCommand('italic', false, '');
         }
         else if(cmd === 'underline') {
-            document.execCommand('underline');
+            document.execCommand('underline', false, '');
         }
         else if(cmd === 'strike') {
-            document.execCommand('strikeThrough');
+            document.execCommand('strikeThrough', false, '');
         }
         else if(cmd === 'align_left') {
-            document.execCommand('justifyLeft');
+            document.execCommand('justifyLeft', false, '');
         }
         else if(cmd === 'align_center') {
-            document.execCommand('justifyCenter');
+            document.execCommand('justifyCenter', false, '');
         }
         else if(cmd === 'align_right') {
-            document.execCommand('justifyRight');
+            document.execCommand('justifyRight', false, '');
         }
 
         else if(cmd === 'font_color') {
