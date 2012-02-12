@@ -41,8 +41,17 @@ var editor = {
             editor.css({left: pos.left,  top: top})
                 .show();
             
+            $(this).bind('keypress.fix_enter',function(e){
+                if(e.keyCode == 13) {
+                    document.execCommand('insertHTML', false, '<br>');
+                    //$(block).keypress('102');
+                    return false;
+                }
+            });               
+            
         })
         .mouseout(function() {
+            $(this).unbind('keypress.fix_enter');
             //document.designMode = "off";
 
             //$(this).find('.wysiwyg_panel').hide();
