@@ -1,139 +1,179 @@
-function fbug(x){
-    if ((typeof(console) != 'undefined') && (typeof(console['log']) != 'undefined'))
-        console.log(x);
-}
+(function($){
+    $.extend({
+        editor: new function() {
+            this.version = '0.1';
+            var buttons = [];
 
-var editor = {
-    init: function() {
-   
-    },
-    add: function(block) {
+            var defaults = {
+                buttons: [
+                    'bold', 'italic', 'underline', 'strike',
+                    'align_left', 'align_center', 'align_right'
+                ],
+                activate_event: 'click',
+                ajax_url: false,
+                ajax_handler: false
+            };
 
-        var buttons = [
-            'bold', 'italic', 'underline', 'strike',
-            'align_left', 'align_center', 'align_right', 'save'];
-        var wysiwyg = $('<div class="wysiwyg_panel"></div>');
+            this.construct = function(settings) {
+                return this.each(function(){
+                    var el = this;
+                    var $el = $(el);
+                    var settings = $.extend({}, defaults, settings);
+                    // saving settings, for later use
+                    $el.data('editor.settings', settings);
 
-        var i = 0;
-        $.each(buttons, function(k, v) {
-            i++;
-            var el = $('<div data-command="'+ v +'" class="wysiwyg_btn wysiwyg_btn_'+ v +'"></div>')
-                .mousedown(function() {return false})
-                .click(editor.command);
+                    var ed = $.editor;
 
-            wysiwyg.append(el);
-        });
+                    // unique class name, for referencing text block, with editor panel
+                    var unique_class = genId();
 
-        wysiwyg.width(i*24);
+                    //constructing editor panel
+                    var wysiwyg = $('<div class="wysiwyg_panel"></div>')
+                        .addClass(unique_class);
+                    var i = 0;
+                    $.each(settings.buttons, function(k, v) {
+                        i++;
+                        var btn = $('<div class="wysiwyg_btn"></div>')
+                            .data('command', v)
+                            .addClass('wysiwyg_btn_'+ v)
+                            .on('mousedown', function() {
+                                //fbug('mousedown');
+                                return false;
+                            })
+                            .on('click', function(e) {
 
-        block.contentEditable = true;
-        block = $(block);
+                                var cmd = $(this).data('command');
+                                var btn = buttons[cmd];
+                                //fbug(['click', cmd, btn]);
+                                var x = e.clientX;
+                                var y = e.clientY;
 
-        block.click(function() {
-            $('.wysiwyg_panel').hide();
-            //document.designMode = "on";
+                                if(btn) {
+                                    btn.handler($el, settings, x, y);
+                                }
+                            });
+                        wysiwyg.append(btn);
+                    });
 
-            var pos = block.position();
-            var editor = $(this).find('.wysiwyg_panel');
+                    //wysiwyg.width(i*24);
+                    wysiwyg.appendTo($el);
+                    el.contentEditable = true;
 
-            var top = parseInt(pos.top) - parseInt(editor.height()) + parseInt(block.css('margin-top')) + parseInt(block.css('padding-top'));
-            editor.css({left: pos.left,  top: top})
-                .show();
-            
-               
-            
-        })
-        .mouseout(function() {
-            //document.designMode = "off";
+                    //
+                    var activateEditor = function() {
+                        // first - hiding all other panels
+                        hide_editors();
 
-            //$(this).find('.wysiwyg_panel').hide();
-            //block.attr('contenteditable', false);
-        });
+                        var pos = $el.position();
+                        var editor = $('.'+ unique_class).show();
 
-        wysiwyg.contentEditable = false;
-        block.prepend(wysiwyg);
-        //disableSelection(wysiwyg);
-    },
-    command: function(e) {
-        var cmd = $(this).data('command');
-        var block = $(this).parents('p');
 
-        var x = e.clientX;
-        var y = e.clientY;
+                        var el_height = parseInt(editor.height()),
+                            el_margin_top = parseInt($el.css('margin-top')),
+                            el_padding_top = parseInt($el.css('padding-top'));
+                        var top = pos.top - el_height + el_margin_top + el_padding_top;
 
-        if(cmd === 'bold') {
+                        editor.css({
+                            left: pos.left,
+                            top: top
+                        });
+                    };
+
+                    $el
+                        .on(settings.activate_event, activateEditor)
+                        .on('blur', hide_editors);
+                });
+            };
+
+            this.addButton = function(code, data) {
+                buttons[code] = data;
+            }
+        }
+    });
+
+
+    function hide_editors() {
+        $('.wysiwyg_panel').hide();
+    }
+
+    function fbug(x){
+        if ((typeof(console) != 'undefined') && (typeof(console['log']) != 'undefined'))
+            console.log(x);
+    }
+
+    function genId() {
+        var nid = 'editor_uniqeid_'+ Math.floor(Math.random() * 10000);
+
+        if( $('.'+ nid).length === 0 ) {
+            return nid;
+        } else {
+            return genId();
+        }
+    }
+
+    // extend plugin scope
+    $.fn.extend({
+        editor: $.editor.construct
+    });
+
+    var ed = $.editor;
+
+    ed.addButton('bold', {
+        handler: function(el, settings, x, y) {
             document.execCommand('bold', false, '');
         }
-        else if(cmd === 'italic') {
+    });
+    ed.addButton('italic', {
+        handler: function(el, settings, x, y) {
             document.execCommand('italic', false, '');
         }
-        else if(cmd === 'underline') {
+    });
+    ed.addButton('underline', {
+        handler: function(el, settings, x, y) {
             document.execCommand('underline', false, '');
         }
-        else if(cmd === 'strike') {
+    });
+    ed.addButton('strike', {
+        handler: function(el, settings, x, y) {
+            fbug(111)
             document.execCommand('strikeThrough', false, '');
         }
-        else if(cmd === 'align_left') {
+    });
+    ed.addButton('align_left', {
+        handler: function(el, settings, x, y) {
             document.execCommand('justifyLeft', false, '');
         }
-        else if(cmd === 'align_center') {
+    });
+    ed.addButton('align_center', {
+        handler: function(el, settings, x, y) {
             document.execCommand('justifyCenter', false, '');
         }
-        else if(cmd === 'align_right') {
+    });
+    ed.addButton('align_right', {
+        handler: function(el, settings, x, y) {
             document.execCommand('justifyRight', false, '');
         }
-
-        else if(cmd === 'font_color') {
-            cs.showColorPicker(x,  y,  function(color) {
-                block.css('color', color);
-            });
-        }
-
-        else if(cmd === 'bg_color') {
-            cs.showColorPicker(x,  y,  function(color) {
-                block.css('background-color', color);
-                block.css('border-color', color);
-
-                block.data('');
-            });
-        }
-
-        else if(cmd === 'close') {
-            block.remove();
-        }
-        else if(cmd === 'font_size') {
-            cs.prompt({
-                x: x,
-                y: y + 20,
-                text: 'Enter font size',
-                callback: function(val) {
-                    var size = parseInt(val) +'px';
-                    block.find('.edit_text').css({'font-size': size, 'line-height': size});
-                    block.css({'height': size});
-                    var w = cs.checkWidth(block.find('.edit_text').clone());
-                    block.css({'width': w});
-                }
-            })
-        }
-        else if(cmd === 'save') {
-            datavalue = block.clone();
+    });
+    ed.addButton('save', {
+        handler: function(el, settings, x, y) {
+            fbug(settings);
+            var datavalue = el.clone();
             datavalue.find('.wysiwyg_panel').remove();
+
             var formData = {
-                "id":block.attr('data_id')
-                , "value":datavalue.html()
-            };            
+                'id': el.attr('data_id'),
+                'value': datavalue.html()
+            };
+
+
             $.ajax({
-                url:'example.php'
-                , type:'POST'
-                , data:'jsonData=' + $.toJSON(formData)
-                , success: function(res) {
+                url: 'example.php',
+                type:'POST',
+                data: {'html': $.toJSON(formData)},
+                success: function(res) {
                     alert('Data updated');
                 }
-            });           
-        }        
-
-        //
-
-        return false;
-    }
-};
+            });
+        }
+    });
+})(jQuery);
