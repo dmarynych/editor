@@ -7,7 +7,8 @@
             var defaults = {
                 buttons: [
                     'bold', 'italic', 'underline', 'strike',
-                    'align_left', 'align_center', 'align_right'
+                    'align_left', 'align_center', 'align_right',
+                    'ordered_list', 'unordered_list'
                 ],
                 activate_event: 'click',
                 ajax_url: false,
@@ -252,6 +253,18 @@
     ed.addButton('align_right', {
         handler: function(el, settings, x, y) {
             document.execCommand('justifyRight', false, '');
+        }
+    });
+
+    ed.addButton('ordered_list', {
+        handler: function(el, settings, x, y) {
+            document.execCommand('insertOrderedList', false, '');
+        }
+    });
+
+    ed.addButton('unordered_list', {
+        handler: function(el, settings, x, y) {
+            document.execCommand('insertUnorderedList', false, '');
         }
     });
     ed.addButton('save', {
