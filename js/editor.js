@@ -8,7 +8,7 @@
                 buttons: [
                     'bold', 'italic', 'underline', 'strike',
                     'align_left', 'align_center', 'align_right',
-                    'ordered_list', 'unordered_list'
+                    'ordered_list', 'unordered_list', 'image'
                 ],
                 activate_event: 'click',
                 ajax_url: false,
@@ -53,7 +53,10 @@
                             reader.onload = function(event) {
                                 if (event.target.file.type.search(/image\/.*/) != -1) {
                                     fbug(event.target.file)
-                                    upload_file(event.target.file);
+                                    //holder.style.background = 'url(' + event.target.result + ') no-repeat center';
+                                    document.execCommand('insertImage', false, event.target.result);
+                                    //
+                                    //upload_file(event.target.file);
                                 }
                                 else {
                                     fbug('keke')
@@ -61,6 +64,7 @@
 
                                 //cs.addImg(event.target.result);
                                 //holder.style.background = 'url(' + event.target.result + ') no-repeat center';
+
                             };
 
                             reader.readAsDataURL(files[0]);

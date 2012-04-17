@@ -28,5 +28,3 @@
     </script>
 </body>
 </html>
-
-<!-- demo for Zhenya -->

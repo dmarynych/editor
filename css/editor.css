@@ -68,6 +68,10 @@
 .wysiwyg_btn_unordered_list {
     background-image: url('../img/oxygen/format_list_unordered.png');
 }
+.wysiwyg_btn_image {
+    background-image: url('../img/oxygen/image.png');
+}
+
 
 .wysiwyg_btn_align_left { background-image: url('../img/oxygen/text_left.png');}
 .wysiwyg_btn_align_center { background-image: url('../img/oxygen/text_center.png');}
