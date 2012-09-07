@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Editor</title>
 
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/editor.css">
 </head>
 <body>
@@ -17,13 +19,15 @@
 
     <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.json-2.3.min.js"></script>
+
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    
     <script type="text/javascript" src="js/editor.js"></script>
     <script type="text/javascript">
         $(function() {
-            $.each($('p'), function(k, v) {
-                //editor.add(v);
+            $('p').editor({
+                uilib: 'bootstrap'
             });
-            $('p').editor();
         });
     </script>
 </body>

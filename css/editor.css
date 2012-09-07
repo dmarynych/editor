@@ -31,12 +31,13 @@
     background-repeat: no-repeat;
     background-position: 4px 4px;
 }
-.wysiwyg_btn:hover {
-    background-color: #c6edf9;
+
+.wysiwyg_btn_bold.btn {
+    min-width: 20px;
+    padding: 2px;
 }
-.wysiwyg_btn_bold {
-    background-image: url('../img/oxygen/bold.png');
-}
+
+
 .wysiwyg_btn_italic {
     background-image: url('../img/oxygen/italic.png');
 }

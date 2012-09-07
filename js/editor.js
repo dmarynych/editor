@@ -25,13 +25,19 @@
      * @param {Object} settings settings for editor instance
      */
     newjs.Editor = function(element, settings) {
+        var defaults, $el, wysiwyg,
+            // unique class name, for referencing text block, with editor panel
+            unique_class = genId('editor')
+        ;
+
         this.version = '0.1';
+        this.$edit_el = $(element);
 
         /**
          * @property defaults
          * @type {Object}
          */
-        var defaults = {
+        defaults = {
             buttons: [
                 'bold', 'italic', 'underline', 'strike',
                 'align_left', 'align_center', 'align_right',
@@ -42,58 +48,47 @@
             ajax_handler: false
         };
 
-        var $el = $(element);
-        settings = $.extend({}, defaults, settings);fbug(settings);
-        // saving settings, for later use
-        $el.data('editor.settings', settings);
 
-        // unique class name, for referencing text block, with editor panel
-        var unique_class = genId('editor');
+        this.settings = $.extend({}, defaults, settings);
+        fbug([this.$edit_el[0], this.settings]);
+        // saving settings, for later use
+        this.$edit_el.data('editor.settings', this.settings);
+
+
+
 
         //constructing editor panel
-        var wysiwyg = $('<div class="wysiwyg_panel"></div>')
+        wysiwyg = $('<ul class="wysiwyg_panel"></ul>')
             .addClass(unique_class);
-        var i = 0;
-        $.each(settings.buttons, function(k, v) {
-            i++;
-            var btn = $('<div class="wysiwyg_btn"></div>')
-                .data('command', v)
-                .addClass('wysiwyg_btn_'+ v)
-                .on('mousedown', function() {
-                    //fbug('mousedown');
-                    return false;
-                })
-                .on('click', function(e) {
-                    var cmd = $(this).data('command');
-                    var btn = newjs.editor.buttons[cmd];
-                    //fbug(['click', cmd, btn]);
-                    var x = e.clientX;
-                    var y = e.clientY;
 
-                    if(btn) {
-                        btn.handler($el, settings, x, y);
-                    }
-                });
-            wysiwyg.append(btn);
-        });
+        $.each(this.settings.buttons, $.proxy(function(k, v) {
+            if( newjs.editor.buttons[v] ) {
+                var button = new newjs.Button(v, newjs.editor.buttons[v], this);
+
+                wysiwyg.append( button.getHTML()) ;
+            }
+
+        }, this));
 
         //wysiwyg.width(i*24);
-        wysiwyg.appendTo($el);
+        wysiwyg.appendTo(this.$edit_el);
         element.contentEditable = true;
 
         //
-        var activateEditor = function() {
+        this.activate = function() {
+            var pos, editor,
+                el_height, el_margin_top, el_padding_top, top;
             // first - hiding all other panels
+
             hide_editors();
 
-            var pos = $el.position();
-            var editor = $('.'+ unique_class).show();
+            pos = this.$edit_el.position();
+            editor = $('.'+ unique_class).show();
 
-
-            var el_height = parseInt(editor.height()),
-                el_margin_top = parseInt($el.css('margin-top')),
-                el_padding_top = parseInt($el.css('padding-top'));
-            var top = pos.top - el_height + el_margin_top + el_padding_top;
+            el_height = parseInt(editor.height()),
+            el_margin_top = parseInt(this.$edit_el.css('margin-top')),
+            el_padding_top = parseInt(this.$edit_el.css('padding-top'));
+            top = pos.top - el_height + el_margin_top + el_padding_top;
 
             editor.css({
                 left: pos.left,
@@ -101,8 +96,8 @@
             });
         };
 
-        $el
-            .on(settings.activate_event, activateEditor)
+        this.$edit_el
+            .on(this.settings.activate_event, $.proxy(this.activate, this) )
             .on('blur', hide_editors);
 
 
@@ -123,6 +118,56 @@
         }
     };
 
+    newjs.Button = function(btn_type, config, editor) {
+        var a;
+        this.btn_type = btn_type;
+        var cl = config.display_type !== 'list_item' ? 'wysiwyg_btn' : 'wysiwyg_list_item';
+
+        this.html = $('<li><a href="#" class="wysiwyg_button"></a></li>')
+            .addClass(cl);
+
+        a = this.html.find('a');
+
+        a.data('command', btn_type)
+            .addClass('wysiwyg_btn_'+ btn_type)
+            .on('mousedown', function(e) {
+                return false;
+            })
+            .on('click', function(e) {fbug(e)
+                var cmd = $(this).data('command');
+                var btn = newjs.editor.buttons[cmd];
+                var x = e.clientX;
+                var y = e.clientY;
+
+                if(btn) {
+                    btn.handler(editor.$edit_el, editor.settings, x, y);
+                }
+            });
+
+        if(config.html) {
+            a.html(config.html);
+        }
+
+        if(config.list_data && config.list_data.length > 0) {
+            var ul = $('<ul class="dropdown-menu" role="menu"></ul>');
+
+            $.each(config.list_data, function(k, v) {
+                v.display_type = 'list_item';
+                var btn = new newjs.Button(k, v, editor);
+
+                ul.append( btn.getHTML() );
+            });
+
+            a.addClass('btn dropdown-toggle')
+                .attr('data-toggle', "dropdown");
+            this.html.append(ul);
+        }
+
+        this.getHTML = function() {
+            return this.html;
+        };
+    };
+
     // extend plugin scope
     $.fn.extend({
         editor: function(settings) {
@@ -138,11 +183,23 @@
     }
 
     newjs.editor.addButton('bold', {
-        handler: function(el, settings, x, y) {
+        html: 'B',
+        list_data: [
+            {
+                html: '1',
+                handler: function() { fbug('keke'); }
+            },
+            {
+                html: '2',
+                handler: function() { fbug('keke2'); }
+            }
+        ],
+        handler: function(el, settings) {
             document.execCommand('bold', false, '');
         }
     });
     newjs.editor.addButton('italic', {
+        html: '<em>i</em>',
         handler: function(el, settings, x, y) {
             document.execCommand('italic', false, '');
         }
